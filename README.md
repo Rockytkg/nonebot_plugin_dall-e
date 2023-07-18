@@ -1,2 +1,47 @@
 # nonebot_plugin_dall-e
-A nonebot2 plugin that uses a key pool and key polling technology to manage API calls effectively. It supports setting the maximum number of calls per minute for each key to break API rate limits. In addition, it can filter out prompt words that users do not want to see.
+
+🌈这是一个基于nonebot2和onebot v11协议的插件，名为nonebot_plugin_dall-e。它使用key池和key轮询技术，支持设置每个key每分钟最高调用次数，用于突破API的调用次数限制。🚀
+
+## 功能和特性🏷️
+1. **Key池** - 有效管理多个API keys，保证均匀使用。
+2. **Key轮询** - 通过轮询机制使用API keys，确保每个key都有被使用到，降低了被封的风险。
+3. **自定义key调用次数** - 用户可以设置每个key每分钟最高的调用次数，防止频繁调用导致key被封。
+4. **突破API调用限制** - 通过上述特性，有效突破API的调用限制。
+5. **用户提示词过滤** - 可以设置违禁词，过滤用户的提示词。
+
+## 使用教程📒
+
+下表为插件的主要操作及其功能。
+
+| 命令                   | 功能                                                  |
+| ---------------------- | ----------------------------------------------------- |
+| 开关绘图               | 控制功能的开关                                        |
+| 开启绘图               | 开启绘图功能                                          |
+| 关闭绘图               | 关闭绘图功能                                          |
+| 绘图尺寸/尺寸 大/中/小 | 设置绘图尺寸，大(1024x1024)，中(512x512)，小(256x256) |
+| 画 prompt              | 根据给出的提示词生成图片                              |
+| 垫图 选择的图片        | 通过图生图模式生成图片                                |
+
+## 安装步骤⚙️
+
+1. 通过pip安装nonebot_plugin_dall-e插件:
+    ```
+    pip install nonebot_plugin_dall-e
+    ```
+2. 在你的 `bot.py` 文件中加载插件：
+    ```python
+    nonebot.load_plugin('nonebot_plugin_dall-e')
+    ```
+
+3. 在 `.env` 文件中配置 `usageCountPerMinuteKey = 3`（根据你的需求设置每分钟每个key的最多调用次数）。
+
+4. 在 `data` 目录中创建 `penai_key.txt` 文件，并在文件中写入你的key，每行写入一个key。
+
+5. 在 `data` 目录中创建 `违禁词.txt` 文件，并写入你不希望出现在用户提示词中的词语，每行一个词。
+
+## 常见问题与解决方法🔧
+
+此处将给出针对常见问题和错误的解决方案（没有具体信息，所以暂时空白）。
+
+---
+🥳快来试试nonebot_plugin_dall-e插件，让你的nonebot2机器人更上一层楼！
