@@ -26,7 +26,7 @@ __plugin_meta__ = PluginMetadata(
 )
 
 superusers = get_driver().config.superusers
-usageCountPerMinuteKey = get_driver().config.usageCountPerMinuteKey
+usageCountPerMinuteKey = get_driver().config.usagecountperminutekey
 
 
 class Size(Enum):
