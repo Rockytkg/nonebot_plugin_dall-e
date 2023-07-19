@@ -4,11 +4,26 @@ from nonebot.adapters.onebot.v11.helpers import ImageURLs
 from nonebot.params import CommandArg
 from nonebot.rule import to_me
 from enum import Enum
+from nonebot.plugin import PluginMetadata
 import threading
 from typing import Optional
 from nonebot.permission import SUPERUSER
 from .openai import DALLEKeyManager
 from .tools import *
+
+__version__ = "0.3"
+__plugin_meta__ = PluginMetadata(
+    name="DALL-E绘图",
+    description='使用DALL·E绘图',
+    type="application",
+    usage='',
+    homepage="https://github.com/Rockytkg/nonebot_plugin_dall-e",
+    supported_adapters={"~onebot.v11"},
+    extra={
+        "version": __version__,
+        "author": "Agnes4m <2696916846@qq.com>",
+    },
+)
 
 superusers = get_driver().config.superusers
 usageCountPerMinuteKey = get_driver().config.usageCountPerMinuteKey

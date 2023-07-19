@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="nonebot_plugin_dall-e",
-    version="0.2",
+    version="0.3",
     packages=find_packages(),
     install_requires=["nonebot2", "openai", "pillow", "aiohttp", "nonebot-adapter-onebot"],
 
