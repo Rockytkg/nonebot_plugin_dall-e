@@ -11,7 +11,7 @@ from nonebot.permission import SUPERUSER
 from .openai import DALLEKeyManager
 from .tools import *
 
-__version__ = "0.4"
+__version__ = "0.5"
 __plugin_meta__ = PluginMetadata(
     name="DALL-E绘图",
     description='使用DALL·E绘图',
@@ -26,7 +26,7 @@ __plugin_meta__ = PluginMetadata(
 )
 
 superusers = get_driver().config.superusers
-usageCountPerMinuteKey = get_driver().config.usagecountperminutekey
+dallkey = get_driver().config.dallkey
 
 
 class Size(Enum):
@@ -48,7 +48,7 @@ DALLESwitchState_lock = threading.Lock()  # 用于保护DALLESwitchState
 DALLEImageSize = Size.SMALL  # 图片尺寸，默认为256x256
 DALLEImageSize_lock = threading.Lock()  # 用于保护DALLEImageSize
 gfw = DFAFilter()  # 初始化敏感词过滤器
-dalle = DALLEKeyManager(usageCountPerMinuteKey)  # 实例化DALL·E绘图管理器
+dalle = DALLEKeyManager(dallkey)  # 实例化DALL·E绘图管理器
 drawing_users_lock = threading.Lock()  # 用于绘图用户的锁
 
 dall_drawing = on_command("开关绘图", aliases={"开启绘图", "关闭绘图"}, permission=SUPERUSER, priority=2,

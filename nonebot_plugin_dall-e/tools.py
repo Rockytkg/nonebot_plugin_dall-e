@@ -12,15 +12,14 @@ class DFAFilter:
 
     def load_keywords(self):
         file_path = Path("data") / "违禁词.txt"
-
-        if not file_path.exists():
-            file_path.touch()
-
-        with open(file_path, 'r', encoding='utf8') as file:
-            for line in file:
-                stripped_line = line.strip()
-                if stripped_line:
-                    self.add(stripped_line)
+        try:
+            with open(file_path, 'r', encoding='utf8') as file:
+                for line in file:
+                    stripped_line = line.strip()
+                    if stripped_line:
+                        self.add(stripped_line)
+        except Exception as e:
+            logger.error(f"DALL-E读取敏感词失败: {e}")
 
     def add(self, keyword):
         keyword = keyword.lower()

@@ -33,7 +33,7 @@
     nonebot.load_plugin('nonebot_plugin_dall-e')
     ```
 
-3. 在 `.env` 文件中配置 `usageCountPerMinuteKey = 3`（根据你的需求设置每分钟每个key的最多调用次数）。
+3. 在 `.env` 文件中配置 `dallkey = 3`（根据你的需求设置每分钟每个key的最多调用次数）。
 
 4. 在 `data` 目录中创建 `penai_key.txt` 文件，并在文件中写入你的key，每行写入一个key。
 
