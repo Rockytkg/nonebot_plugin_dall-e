@@ -1,5 +1,4 @@
 from pathlib import Path
-import codecs
 from nonebot.log import logger
 from io import BytesIO
 import aiohttp
@@ -12,11 +11,15 @@ class DFAFilter:
         self.load_keywords()
 
     def load_keywords(self):
-        file_name = str(Path() / "data" / "违禁词.txt")
-        with codecs.open(file_name, 'r', encoding='utf8') as f:
-            for line in f:
+        file_path = Path("data") / "违禁词.txt"
+
+        if not file_path.exists():
+            file_path.touch()
+
+        with open(file_path, 'r', encoding='utf8') as file:
+            for line in file:
                 stripped_line = line.strip()
-                if stripped_line != '':
+                if stripped_line:
                     self.add(stripped_line)
 
     def add(self, keyword):

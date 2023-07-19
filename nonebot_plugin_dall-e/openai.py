@@ -21,8 +21,13 @@ class DALLEKeyManager:
 
     @staticmethod
     def read_keys_from_file():
-        # 从文件中读取key
-        key_file = Path() / "data" / "openai_key.txt"
+        # 生成文件路径
+        key_file = Path("data") / "openai_key.txt"
+
+        # 检查文件是否存在，如果不存在则创建文件
+        if not key_file.exists():
+            key_file.touch()
+
         with open(key_file, 'r', encoding="utf8") as f:
             keys = [line.strip() for line in f.readlines()]
         return keys
