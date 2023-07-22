@@ -5,13 +5,13 @@ from nonebot.params import CommandArg
 from nonebot.rule import to_me
 from enum import Enum
 from nonebot.plugin import PluginMetadata
-import threading
+import asyncio
 from typing import Optional
 from nonebot.permission import SUPERUSER
 from .openai import DALLEKeyManager
 from .tools import *
 
-__version__ = "0.5"
+__version__ = "0.6.0"
 __plugin_meta__ = PluginMetadata(
     name="DALL-E绘图",
     description='使用DALL·E绘图',
@@ -27,6 +27,10 @@ __plugin_meta__ = PluginMetadata(
 
 superusers = get_driver().config.superusers
 dallkey = get_driver().config.dallkey
+try:
+    openai_proxy = get_driver().config.openai_proxy
+except:
+    openai_proxy = None
 
 
 class Size(Enum):
@@ -44,12 +48,12 @@ size_mapping = {
 # 全局变量，用于存储DALL·E的开关状态、图片尺寸，以及正在绘图的用户
 drawing_users = {}  # 用于存储正在绘图的用户
 DALLESwitchState = True  # 开关状态,默认关闭
-DALLESwitchState_lock = threading.Lock()  # 用于保护DALLESwitchState
+DALLESwitchState_lock = asyncio.Lock()  # 用于保护DALLESwitchState
 DALLEImageSize = Size.SMALL  # 图片尺寸，默认为256x256
-DALLEImageSize_lock = threading.Lock()  # 用于保护DALLEImageSize
+DALLEImageSize_lock = asyncio.Lock()  # 用于保护DALLEImageSize
 gfw = DFAFilter()  # 初始化敏感词过滤器
-dalle = DALLEKeyManager(dallkey)  # 实例化DALL·E绘图管理器
-drawing_users_lock = threading.Lock()  # 用于绘图用户的锁
+dalle = DALLEKeyManager(dallkey, openai_proxy)  # 实例化DALL·E绘图管理器
+drawing_users_lock = asyncio.Lock()  # 用于绘图用户的锁
 
 dall_drawing = on_command("开关绘图", aliases={"开启绘图", "关闭绘图"}, permission=SUPERUSER, priority=2,
                           block=True)
@@ -61,7 +65,7 @@ async def _(event: MessageEvent):
     if isinstance(event, PrivateMessageEvent) and str(event.user_id) not in superusers:
         await dall_drawing.finish("私聊无法使用此功能")
     if isinstance(event, GroupMessageEvent):
-        with DALLESwitchState_lock:
+        async with DALLESwitchState_lock:
             if not DALLESwitchState:
                 DALLESwitchState = True
                 await dall_drawing.finish("已开启绘图功能")
@@ -80,7 +84,7 @@ async def _(event: MessageEvent, arg: Message = CommandArg()):
         await dall_drawing.finish("私聊无法使用此功能")
     directives = arg.extract_plain_text()
     if directives in size_mapping:
-        with DALLEImageSize_lock:
+        async with DALLEImageSize_lock:
             DALLEImageSize = size_mapping[directives]
         logger.success(f"已设置绘图尺寸为{DALLEImageSize.value}")
         await dell_size.finish(f"已设置绘图尺寸为{DALLEImageSize.value}")
@@ -90,7 +94,7 @@ async def _(event: MessageEvent, arg: Message = CommandArg()):
 
 async def do_drawing(event: MessageEvent, arg: Optional[Message] = None, urls: Optional[ImageURLs] = None):
     user_id = str(event.user_id)
-    with drawing_users_lock:
+    async with drawing_users_lock:
         if isinstance(event, PrivateMessageEvent) and user_id not in superusers:
             await dall_drawing.finish("私聊无法使用此功能")
 
@@ -122,19 +126,14 @@ async def do_drawing(event: MessageEvent, arg: Optional[Message] = None, urls: O
             result, success = await dalle.get_image(prompt, DALLEImageSize.value)
     finally:
         # 无论成功或失败，都从绘图用户列表中删除
-        with drawing_users_lock:
+        async with drawing_users_lock:
             del drawing_users[user_id]
 
     response_message = MessageSegment.image(result) if success else "绘图失败，请重试"
     if not success:
         logger.error(f"DALL·E绘图失败: {result}")
 
-    if isinstance(event, PrivateMessageEvent):
-        await dall_drawing.finish(response_message)
-    else:
-        message_id = event.message_id
-        response_message = MessageSegment.reply(message_id) + response_message
-        await dall_drawing.finish(response_message, at_sender=True)
+    await dall_drawing.finish(response_message, at_sender=True)
 
 
 dall_drawing = on_command("画", rule=to_me(), aliases={"draw"}, priority=2, block=True)

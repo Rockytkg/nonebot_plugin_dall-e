@@ -33,7 +33,7 @@
     nonebot.load_plugin('nonebot_plugin_dall-e')
     ```
 
-3. 在 `.env` 文件中配置 `dallkey = 3`（根据你的需求设置每分钟每个key的最多调用次数）。
+3. 在 `.env` 文件中配置 `DALLKEY = 3`（根据你的需求设置每分钟每个key的最多调用次数）。
 
 4. 在 `data` 目录中创建 `penai_key.txt` 文件，并在文件中写入你的key，每行写入一个key。
 
@@ -41,7 +41,8 @@
 
 ## 常见问题与解决方法🔧
 
-此处将给出针对常见问题和错误的解决方案（没有具体信息，所以暂时空白）。
-
+### 0.6
+使用httpx替换openai官方库，支持反向代理
+在 `.env` 文件中配置 `OPENAI_PROXY=""`（根据你的需求设置代理地址）
 ---
 🥳快来试试nonebot_plugin_dall-e插件，让你的nonebot2机器人更上一层楼！

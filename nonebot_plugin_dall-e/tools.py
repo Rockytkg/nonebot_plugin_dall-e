@@ -2,6 +2,10 @@ from pathlib import Path
 from nonebot.log import logger
 from io import BytesIO
 import aiohttp
+from PIL import Image
+import base64
+import tempfile
+import os
 
 
 class DFAFilter:
